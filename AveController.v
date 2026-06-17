@@ -1,8 +1,6 @@
 module AveController (
-    input [7:0]dataIn,
     input start, reset, clk,
-    output [15:0]dataOut,
-    output dataReady, rstsum, loadsum, rstcounter, encount, rstout, loadoutput
+    output reg dataReady, rstsum, loadsum, rstcounter, encount, rstout, loadoutput
 );
 
 parameter [1:0]
@@ -32,6 +30,7 @@ always @(Pstate, start) begin
     nstate = IDLE;
     case(Pstate)
         IDLE:
+        begin
             rstsum = 1'b1;
             rstcounter = 1'b1;
             rstout = 1'b1;
@@ -39,21 +38,32 @@ always @(Pstate, start) begin
                 nstate = GETData;
             else
                 nstate = IDLE;
-        
+        end
+
         GETData:
+        begin
             loadsum = 1'b1;
             encount = 1'b1;
             if(start)
                 nstate = GETData;
             else
                 nstate = LoadData;
-        
+        end
+
         LoadData:
+        begin
             loadoutput = 1'b1;
             nstate = Done;
-        
+        end
+
         Done:
+        begin
             dataReady = 1'b1;
             nstate = IDLE;
+        end
+
+        default:
+            nstate = IDLE;
+
     endcase
 end
