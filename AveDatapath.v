@@ -27,16 +27,14 @@ module AveDatapath (
             countout <= countout + 1'b1;
     end
 
-    always @(*) begin
+    always @(posedge clk) begin
         if (loadoutput) begin
             if (countout == 9'd0) 
-                dataOut = 16'd0;
+                dataOut <= 16'd0;
             else
-                dataOut = sum / countout;
+                dataOut <= sum / countout;
         end
-        else begin
-            dataOut = 16'd0;
-        end
+
     end
 
 endmodule

@@ -21,38 +21,31 @@ module tb_Average;
 
     always #5 clk = ~clk;
 
-initial begin
-    
+    initial begin
+
         clk = 0;
         reset = 1;
         start = 0;
         dataIn = 8'd0;
 
-        #15;
+        #12;
         reset = 0;
-        #10;
+        #8;
 
         start = 1;
         
-        dataIn = 8'd4;
-        #10;
-        
-        dataIn = 8'd8;
-        #10;
-        
-        dataIn = 8'd2;
-        #10;
-        
-        dataIn = 8'd1;
-        #10;
+        dataIn = 8'd4;  #10;
+        dataIn = 8'd8;  #10;
+        dataIn = 8'd2;  #10;
+        dataIn = 8'd1;  #10;
 
         start = 0;
         dataIn = 8'd0;
 
         @(posedge dataReady);
-        #5;
+        #2;
 
-        $display("Calculated Average: %d (Expected: 3 )", dataOut);
+        $display("Calculated Average: %d (Expected: 3)", dataOut);
 
         #20;
         $finish;

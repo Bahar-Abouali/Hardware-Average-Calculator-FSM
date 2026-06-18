@@ -1,6 +1,6 @@
 module AveController (
-    input  wire start, reset, clk,
-    output reg  dataReady, rstsum, loadsum, rstcounter, encount, rstout, loadoutput
+    input wire start, reset, clk,
+    output reg dataReady, rstsum, loadsum, rstcounter, encount, rstout, loadoutput
 );
 
     parameter [1:0]
@@ -11,14 +11,15 @@ module AveController (
 
     reg [1:0] Pstate, nstate;
 
-    always @(posedge clk) begin
+    always @(posedge clk or posedge reset) begin
         if (reset)
             Pstate <= IDLE;
         else
             Pstate <= nstate;
     end
 
-    always @(Pstate, start) begin
+    always @(*) begin
+
         dataReady  = 1'b0;
         rstsum     = 1'b0;
         loadsum    = 1'b0;
@@ -40,12 +41,17 @@ module AveController (
             end
 
             GETData: begin
-                loadsum = 1'b1;
-                encount = 1'b1;
-                if (start)
-                    nstate = GETData;
-                else
-                    nstate = LoadData;
+
+                if (start) begin
+                    loadsum = 1'b1;
+                    encount = 1'b1;
+                    nstate  = GETData;
+                end
+                else begin
+                    loadsum = 1'b0;
+                    encount = 1'b0;
+                    nstate  = LoadData;
+                end
             end
 
             LoadData: begin
